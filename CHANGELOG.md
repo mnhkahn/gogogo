@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Chore
+- **chglog:** add chglog config
+
 ### Refactor
 - **go:** support go1.11
 
