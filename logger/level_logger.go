@@ -7,8 +7,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/ivpusic/grpool"
-	lumberjack "gopkg.in/natefinch/lumberjack.v2"
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 // LevelError ...
@@ -26,7 +25,6 @@ type Logger struct {
 	warn  *log.Logger
 	info  *log.Logger
 	debug *log.Logger
-	p     *grpool.Pool
 	depth int
 }
 
@@ -62,8 +60,6 @@ func NewLogger3(w io.Writer, flag int, numWorkers int, jobQueueLen int, depth in
 	logger.debug = log.New(w, "[D] ", flag)
 
 	logger.SetLevel(LevelInformational)
-
-	logger.p = grpool.NewPool(numWorkers, jobQueueLen)
 
 	return logger
 }
@@ -102,9 +98,7 @@ func (ll *Logger) Error(format string, v ...interface{}) {
 	if LevelError > ll.level {
 		return
 	}
-	ll.p.JobQueue <- func() {
-		ll.err.Output(ll.depth, fmt.Sprintf(format, v...))
-	}
+	ll.err.Output(ll.depth, fmt.Sprintf(format, v...))
 }
 
 // Warn ...
@@ -112,9 +106,7 @@ func (ll *Logger) Warn(format string, v ...interface{}) {
 	if LevelWarning > ll.level {
 		return
 	}
-	ll.p.JobQueue <- func() {
-		ll.warn.Output(ll.depth, fmt.Sprintf(format, v...))
-	}
+	ll.warn.Output(ll.depth, fmt.Sprintf(format, v...))
 }
 
 // Info ...
@@ -122,9 +114,7 @@ func (ll *Logger) Info(format string, v ...interface{}) {
 	if LevelInformational > ll.level {
 		return
 	}
-	ll.p.JobQueue <- func() {
-		ll.info.Output(ll.depth, fmt.Sprintf(format, v...))
-	}
+	ll.info.Output(ll.depth, fmt.Sprintf(format, v...))
 }
 
 // Debug ...
@@ -132,9 +122,7 @@ func (ll *Logger) Debug(format string, v ...interface{}) {
 	if LevelDebug > ll.level {
 		return
 	}
-	ll.p.JobQueue <- func() {
-		ll.debug.Output(ll.depth, fmt.Sprintf(format, v...))
-	}
+	ll.debug.Output(ll.depth, fmt.Sprintf(format, v...))
 }
 
 // SetJack ...
@@ -157,14 +145,9 @@ func (ll *Logger) SetFlag(flag int) {
 	ll.debug.SetFlags(flag)
 }
 
-// Stats ...
-func (ll *Logger) Stats() (int, int) {
-	return cap(ll.p.JobQueue), len(ll.p.JobQueue)
-}
-
 // StdLogger ...
 var (
-	StdLogger *Logger = NewLogger(log.LstdFlags|log.Lshortfile, 100, 50, 3)
+	StdLogger = NewLogger(log.LstdFlags|log.Lshortfile, 100, 50, 3)
 )
 
 // SetJack ...
