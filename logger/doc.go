@@ -16,6 +16,8 @@ File rotating based on package gopkg.in/natefinch/lumberjack.v2, you can control
 
 Quick start
 
+Use StdLogger:
+
 	import "github.com/mnhkahn/gogogo/logger"
 
 	logger.Info("hello, world.")
@@ -26,6 +28,8 @@ Defined our own logger:
 	l.Info("hello, world")
 
 Log flags compatible with sdk log package, https://golang.org/pkg/log/#pkg-constants.
+
+See also
 
 For more information, goto godoc https://godoc.org/github.com/mnhkahn/gogogo/logger
 
