@@ -69,7 +69,7 @@ func (e *Engine) Handle(pattern string, h http.Handler) {
 	e.mux.Handle(pattern, h)
 }
 
-// ========== Default Engine ===============
+// Default predefined engine
 var GoEngine = NewEngine()
 
 // Handle ...

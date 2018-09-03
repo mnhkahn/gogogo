@@ -24,7 +24,7 @@ Quick start:
 
 For more information, goto godoc https://godoc.org/github.com/mnhkahn/gogogo/app.
 
-A example site: [Cyeam](http://cyeam.com).
+A example site: http://cyeam.com.
 
  */
 package app
