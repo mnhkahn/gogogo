@@ -6,7 +6,7 @@ import (
 	"runtime/pprof"
 )
 
-// Goroutine ...
+// Goroutine returns app detail, including numbers of goroutines, threads, CPU and GOMAXPROCS.
 func Goroutine() map[string]interface{} {
 	res := map[string]interface{}{}
 	res["goroutines"] = runtime.NumGoroutine()
