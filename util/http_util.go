@@ -10,7 +10,7 @@ import (
 	"net/http"
 )
 
-// HttpJson ...
+// HttpJson sends a http request and unmarshal json response to v to return.
 func HttpJson(method, url string, contentType string, body io.Reader, v interface{}) error {
 	req, err := http.NewRequest(method, url, body)
 	if err != nil {
@@ -41,7 +41,7 @@ func HttpJson(method, url string, contentType string, body io.Reader, v interfac
 	return nil
 }
 
-// HttpXml ...
+// HttpXml sends a http request and unmarshal xml response to v to return.
 func HttpXml(method, url string, contentType string, body io.Reader, v interface{}) error {
 	req, err := http.NewRequest(method, url, body)
 	if err != nil {

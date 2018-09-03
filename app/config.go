@@ -1,4 +1,4 @@
-// Package appconfig
+// Package app
 package app
 
 import (

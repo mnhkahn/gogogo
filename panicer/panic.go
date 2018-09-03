@@ -9,6 +9,7 @@ import (
 	"time"
 )
 
+// RecoverHandler help to recover in the handler.
 func RecoverHandler(w http.ResponseWriter, r *http.Request) {
 	if err := recover(); err != nil {
 		fmt.Fprintf(os.Stderr, "Recover %s %v %s\n", time.Now().Format(time.RFC3339), err, r.URL.String())
@@ -18,7 +19,7 @@ func RecoverHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// RecoverDebug 支持打印一个调试信息
+// RecoverDebug help to recover and print a debug info to stderr.
 func RecoverDebug(v interface{}) {
 	if err := recover(); err != nil {
 		fmt.Fprintf(os.Stderr, "Recover: %s %v %+v\n", time.Now().Format(time.RFC3339), err, v)
@@ -26,7 +27,7 @@ func RecoverDebug(v interface{}) {
 	}
 }
 
-// Recover ...
+// Recover recover panic and print time info to stderr.
 func Recover() {
 	if err := recover(); err != nil {
 		fmt.Fprintf(os.Stderr, "Recover: %s %v\n", time.Now().Format(time.RFC3339), err)
@@ -34,6 +35,7 @@ func Recover() {
 	}
 }
 
+// print panic's stack.
 func printStack() {
 	for i := 1; ; i++ {
 		pc, file, line, ok := runtime.Caller(i)
