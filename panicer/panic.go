@@ -1,4 +1,3 @@
-// Package panicer
 package panicer
 
 import (

@@ -1,4 +1,3 @@
-// Package test
 package util
 
 import (

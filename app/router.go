@@ -1,4 +1,3 @@
-// Package app
 package app
 
 // InitRouter ...

@@ -27,5 +27,4 @@ For more information, goto godoc https://godoc.org/github.com/mnhkahn/gogogo/app
 A example site: [Cyeam](http://cyeam.com).
 
  */
-// Package logger
 package app

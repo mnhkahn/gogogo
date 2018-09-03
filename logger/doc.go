@@ -32,5 +32,4 @@ For more information, goto godoc https://godoc.org/github.com/mnhkahn/gogogo/log
 Chinese details, goto http://blog.cyeam.com//golang/2017/07/14/go-log?utm_source=github
 
  */
-// Package logger
 package logger
