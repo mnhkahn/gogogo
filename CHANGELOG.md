@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+
+<a name="v1.0.4"></a>
+## [v1.0.4] - 2018-09-21
 ### Feat
 - **func to handler:** A handler that can auto handle request to call register func.
 
@@ -35,7 +38,8 @@
 - **util:** add a retry and http util.
 
 
-[Unreleased]: https://github.com/mnhkahn/gogogo/compare/v1.0.3...HEAD
+[Unreleased]: https://github.com/mnhkahn/gogogo/compare/v1.0.4...HEAD
+[v1.0.4]: https://github.com/mnhkahn/gogogo/compare/v1.0.3...v1.0.4
 [v1.0.3]: https://github.com/mnhkahn/gogogo/compare/v1.0.2...v1.0.3
 [v1.0.2]: https://github.com/mnhkahn/gogogo/compare/v1.0.1...v1.0.2
 [v1.0.1]: https://github.com/mnhkahn/gogogo/compare/v1.0.0...v1.0.1
