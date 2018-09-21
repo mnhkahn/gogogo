@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Feat
+- **func to handler:** A handler that can auto handle request to call register func.
+
 
 <a name="v1.0.3"></a>
 ## [v1.0.3] - 2018-09-03
