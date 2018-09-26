@@ -37,7 +37,23 @@ func (f *FuncToHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query()
 	var inValues []reflect.Value
 	for i, in := range f.paramIns {
-		value := query.Get(fmt.Sprintf("in%d", i))
+		key := fmt.Sprintf("in%d", i)
+		value := ""
+
+		// if request is post, get value from body
+		if r.Method == http.MethodPost {
+			body := make(map[string]string, len(f.paramIns))
+			decoder := json.NewDecoder(r.Body)
+			err := decoder.Decode(&body)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+			value = body[key]
+		} else {
+			// if request is get, get value from query
+			value = query.Get(key)
+		}
 
 		v, err := xreflect.StringToReflectValue(value, in.Kind().String())
 		if err != nil {
