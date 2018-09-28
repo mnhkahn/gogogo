@@ -2,6 +2,12 @@
 ## [Unreleased]
 
 
+<a name="v1.0.6"></a>
+## [v1.0.6] - 2018-09-28
+### Fix
+- **panic:** Add defer to catch func panic error.
+
+
 <a name="v1.0.5"></a>
 ## [v1.0.5] - 2018-09-26
 ### Feat
@@ -44,7 +50,8 @@
 - **util:** add a retry and http util.
 
 
-[Unreleased]: https://github.com/mnhkahn/gogogo/compare/v1.0.5...HEAD
+[Unreleased]: https://github.com/mnhkahn/gogogo/compare/v1.0.6...HEAD
+[v1.0.6]: https://github.com/mnhkahn/gogogo/compare/v1.0.5...v1.0.6
 [v1.0.5]: https://github.com/mnhkahn/gogogo/compare/v1.0.4...v1.0.5
 [v1.0.4]: https://github.com/mnhkahn/gogogo/compare/v1.0.3...v1.0.4
 [v1.0.3]: https://github.com/mnhkahn/gogogo/compare/v1.0.2...v1.0.3
