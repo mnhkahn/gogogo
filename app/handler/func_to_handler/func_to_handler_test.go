@@ -98,3 +98,22 @@ func TestFuncToHandlerJsonToStruct(t *testing.T) {
 	expected := "{\"out0\":\"package main\\n\\ntype Foo struct {\\n\\tA int64 `json:\\\"a\\\"`\\n}\\n\",\"out1\":null}"
 	assert.Equal(t, expected, rr.Body.String())
 }
+
+func TestNewFuncToHandlerPanic(t *testing.T) {
+	fn := NewFuncToHandler(func(data string) (string, error) {
+		panic(1)
+		return "", nil
+	})
+
+	req, err := http.NewRequest("GET", `/health-check?in0={"a":1}`, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	rr := httptest.NewRecorder()
+
+	fn.ServeHTTP(rr, req)
+
+	assert.Equal(t, http.StatusServiceUnavailable, rr.Code)
+	assert.Equal(t, "", rr.Body.String())
+}

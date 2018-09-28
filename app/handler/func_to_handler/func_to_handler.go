@@ -4,6 +4,7 @@ package func_to_handler
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/mnhkahn/gogogo/panicer"
 	"github.com/mnhkahn/gogogo/xreflect"
 	"net/http"
 	"reflect"
@@ -33,6 +34,8 @@ func NewFuncToHandler(fn interface{}) *FuncToHandler {
 }
 
 func (f *FuncToHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	defer panicer.RecoverHandler(w, r)
+
 	// get parameter in
 	query := r.URL.Query()
 	var inValues []reflect.Value
