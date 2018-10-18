@@ -2,6 +2,12 @@
 ## [Unreleased]
 
 
+<a name="v1.0.8"></a>
+## [v1.0.8] - 2018-10-18
+### Fix
+- **logger:** Fix logger.Info can't set flag bug.
+
+
 <a name="v1.0.7"></a>
 ## [v1.0.7] - 2018-09-29
 ### Feat
@@ -56,7 +62,8 @@
 - **util:** add a retry and http util.
 
 
-[Unreleased]: https://github.com/mnhkahn/gogogo/compare/v1.0.7...HEAD
+[Unreleased]: https://github.com/mnhkahn/gogogo/compare/v1.0.8...HEAD
+[v1.0.8]: https://github.com/mnhkahn/gogogo/compare/v1.0.7...v1.0.8
 [v1.0.7]: https://github.com/mnhkahn/gogogo/compare/v1.0.6...v1.0.7
 [v1.0.6]: https://github.com/mnhkahn/gogogo/compare/v1.0.5...v1.0.6
 [v1.0.5]: https://github.com/mnhkahn/gogogo/compare/v1.0.4...v1.0.5
