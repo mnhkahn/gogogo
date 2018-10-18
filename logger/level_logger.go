@@ -180,6 +180,7 @@ func (ll *Logger) SetJack(lfn string, maxsize int) {
 func (ll *Logger) SetFlag(flag int) {
 	ll.err.SetFlags(flag)
 	ll.warn.SetFlags(flag)
+	ll.info.SetFlags(flag)
 	ll.debug.SetFlags(flag)
 }
 
