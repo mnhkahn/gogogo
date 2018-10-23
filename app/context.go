@@ -159,8 +159,7 @@ func (c *Context) Serve(v interface{}) {
 
 // WriteBytes ...
 func (c *Context) WriteBytes(raw []byte) {
-	a, b := c.ResponseWriter.Write(raw)
-	logger.Warn(a, b, "AAA")
+	c.ResponseWriter.Write(raw)
 }
 
 // WriteString ...
