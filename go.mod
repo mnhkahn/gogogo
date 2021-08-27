@@ -1,9 +1,12 @@
 module github.com/mnhkahn/gogogo
 
+go 1.16
+
 require (
 	github.com/BurntSushi/toml v0.3.0 // indirect
 	github.com/ChimeraCoder/gojson v1.0.0
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/deckarep/golang-set v1.7.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/sasbury/mini v0.0.0-20161224193750-64bd399395db
 	github.com/sony/sonyflake v0.0.0-20181109022403-6d5bd6181009
