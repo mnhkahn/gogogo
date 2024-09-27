@@ -3,6 +3,7 @@ package app
 import (
 	"net"
 	"net/http"
+	"sort"
 	"time"
 
 	"golang.org/x/net/netutil"
@@ -12,9 +13,10 @@ import (
 
 // Engine ...
 type Engine struct {
-	mux    *http.ServeMux
-	server *http.Server
-	l      net.Listener
+	mux      *http.ServeMux
+	patterns []string
+	server   *http.Server
+	l        net.Listener
 }
 
 // NewEngine ...
@@ -67,6 +69,14 @@ func (e *Engine) Handle(pattern string, h http.Handler) {
 		h = http.TimeoutHandler(h, DefaultHandler.TimeOut, "")
 	}
 	e.mux.Handle(pattern, h)
+	e.patterns = append(e.patterns, pattern)
+	sort.Slice(e.patterns, func(i, j int) bool {
+		return e.patterns[i] < e.patterns[j]
+	})
+}
+
+func (e *Engine) Patterns() []string {
+	return e.patterns
 }
 
 // Default predefined engine

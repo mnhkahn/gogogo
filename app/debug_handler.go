@@ -2,11 +2,10 @@ package app
 
 import (
 	"bytes"
+	"encoding/xml"
 	"html/template"
 	"os"
-	"reflect"
 	"runtime"
-	"sort"
 
 	"github.com/mnhkahn/gogogo/logger"
 	"github.com/mnhkahn/gogogo/util"
@@ -31,17 +30,7 @@ func GoAppHandler(c *Context) error {
 
 // DebugRouter is a handler to show all routers.
 func DebugRouter(c *Context) error {
-	v := reflect.ValueOf(GoEngine.mux)
-	m := v.Elem().FieldByName("m")
-
-	keys := m.MapKeys()
-
-	routers := make([]string, 0, len(keys))
-	for _, key := range keys {
-		routers = append(routers, key.String())
-	}
-
-	sort.Strings(routers)
+	routers := GoEngine.patterns
 
 	var buf bytes.Buffer
 	tpl := template.New("routerTpl")
@@ -130,3 +119,19 @@ var statTpl = `
 
 </body>
 `
+
+func SiteMapRaw(c *Context) error {
+	data, err := xml.Marshal(GoEngine.patterns)
+	if err != nil {
+		return err
+	}
+	c.WriteBytes(data)
+	return nil
+}
+
+func SiteMapXML(c *Context) error {
+	for _, pattern := range GoEngine.patterns {
+		c.WriteString(pattern + "\n")
+	}
+	return nil
+}
