@@ -9,4 +9,5 @@ func InitRouter() {
 	Handle("/debug/stat", BasicAuthHandler(Got{StatHandler}, usr, pwd))
 	Handle("/sitemap.xml", Got{SiteMapXML})
 	Handle("/sitemap", Got{SiteMapRaw})
+	Handle("/robots.txt", Got{Robots})
 }

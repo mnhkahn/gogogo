@@ -2,7 +2,6 @@ package app
 
 import (
 	"bytes"
-	"encoding/xml"
 	"html/template"
 	"os"
 	"runtime"
@@ -119,19 +118,3 @@ var statTpl = `
 
 </body>
 `
-
-func SiteMapRaw(c *Context) error {
-	data, err := xml.Marshal(GoEngine.patterns)
-	if err != nil {
-		return err
-	}
-	c.WriteBytes(data)
-	return nil
-}
-
-func SiteMapXML(c *Context) error {
-	for _, pattern := range GoEngine.patterns {
-		c.WriteString(pattern + "\n")
-	}
-	return nil
-}
