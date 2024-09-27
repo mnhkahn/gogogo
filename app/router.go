@@ -7,7 +7,4 @@ func InitRouter() {
 	Handle("/debug/router", BasicAuthHandler(&Got{H: DebugRouter}, usr, pwd))
 	Handle("/debug/log/level", BasicAuthHandler(Got{LogLevelHandler}, usr, pwd))
 	Handle("/debug/stat", BasicAuthHandler(Got{StatHandler}, usr, pwd))
-	Handle("/sitemap.xml", Got{SiteMapXML})
-	Handle("/sitemap", Got{SiteMapRaw})
-	Handle("/robots.txt", Got{Robots})
 }
