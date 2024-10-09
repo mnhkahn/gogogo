@@ -27,26 +27,6 @@ func GoAppHandler(c *Context) error {
 	return nil
 }
 
-// DebugRouter is a handler to show all routers.
-func DebugRouter(c *Context) error {
-	routers := GoEngine.patterns
-
-	var buf bytes.Buffer
-	tpl := template.New("routerTpl")
-	tpl = template.Must(tpl.Parse(debugRouterTpl))
-	err := tpl.ExecuteTemplate(&buf, "routerTpl", struct {
-		Routers []string
-	}{
-		Routers: routers,
-	})
-	if err != nil {
-		return err
-	}
-
-	c.WriteBytes(buf.Bytes())
-	return nil
-}
-
 var debugRouterTpl = `
 <html lang="en">
 <head>
