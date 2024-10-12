@@ -194,6 +194,7 @@ func (c *Context) HTML(filenames []string, data interface{}) {
 
 	err := tmpl.Execute(c.ResponseWriter, data)
 	if err != nil {
+		DefaultHandler.ErrorMsgFunc(err.Error())
 		c.Error(err.Error())
 	}
 }
@@ -204,6 +205,7 @@ func (c *Context) HTMLFunc(filenames []string, data interface{}, funcs template.
 
 	err := tmpl.Execute(c.ResponseWriter, data)
 	if err != nil {
+		DefaultHandler.ErrorMsgFunc(err.Error())
 		c.Error(err.Error())
 	}
 }

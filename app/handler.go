@@ -12,17 +12,19 @@ import (
 
 // Handler ...
 type Handler struct {
-	TimeOut     time.Duration
-	RecoverFunc func(w http.ResponseWriter, r *http.Request) `json:"-"`
-	Stats       map[string]*Stat
-	statLock    sync.RWMutex
+	TimeOut      time.Duration
+	RecoverFunc  func(w http.ResponseWriter, r *http.Request, fn func(string)) `json:"-"`
+	ErrorMsgFunc func(data string)                                             `json:"-"`
+	Stats        map[string]*Stat
+	statLock     sync.RWMutex
 }
 
 // NewHandler ...
 func NewHandler() *Handler {
 	return &Handler{
-		RecoverFunc: panicer.RecoverHandler,
-		Stats:       make(map[string]*Stat),
+		RecoverFunc:  panicer.RecoverHandlerWithFunc,
+		ErrorMsgFunc: func(data string) {},
+		Stats:        make(map[string]*Stat),
 	}
 }
 
@@ -49,8 +51,12 @@ func SetTimeout(d time.Duration) {
 }
 
 // SetRecoverFunc ...
-func SetRecoverFunc(r func(w http.ResponseWriter, r *http.Request)) {
-	DefaultHandler.RecoverFunc = r
+func SetRecoverFunc(recoverFunc func(w http.ResponseWriter, r *http.Request, fn func(string))) {
+	DefaultHandler.RecoverFunc = recoverFunc
+}
+
+func SetErrorMsgFunc(fn func(string)) {
+	DefaultHandler.ErrorMsgFunc = fn
 }
 
 // Got ...
@@ -62,8 +68,11 @@ type Got struct {
 func (h Got) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	st := time.Now()
 
+	// https://golang.dbwu.tech/traps/defer_with_recover/#:~:text=错误的原因在于%3A%20defer%20以匿名函数的方式运行，本身就等于包装了一层函数，%20内部的%20myRecover%20函数包装了%20recover%20函数，等于又加了一层包装，变成了两,panic%20就无法被捕获了%E3%80%82%20defer%20直接调用%20myRecover%20函数，这样减去了一层包装，%20panic%20就可以被捕获了%E3%80%82
 	if DefaultHandler.RecoverFunc != nil {
-		defer DefaultHandler.RecoverFunc(w, r)
+		defer panicer.RecoverHandlerWithFunc(w, r, func(s string) {
+			DefaultHandler.ErrorMsgFunc(s)
+		})
 	}
 
 	c := AllocContext(w, r)
