@@ -4,9 +4,7 @@ import (
 	"bytes"
 	"html/template"
 	"os"
-	"reflect"
 	"runtime"
-	"sort"
 
 	"github.com/mnhkahn/gogogo/logger"
 	"github.com/mnhkahn/gogogo/util"
@@ -26,36 +24,6 @@ func GoAppHandler(c *Context) error {
 	res["log.level"] = logger.StdLogger.GetLevel()
 	c.JSON(res)
 
-	return nil
-}
-
-// DebugRouter is a handler to show all routers.
-func DebugRouter(c *Context) error {
-	v := reflect.ValueOf(GoEngine.mux)
-	m := v.Elem().FieldByName("m")
-
-	keys := m.MapKeys()
-
-	routers := make([]string, 0, len(keys))
-	for _, key := range keys {
-		routers = append(routers, key.String())
-	}
-
-	sort.Strings(routers)
-
-	var buf bytes.Buffer
-	tpl := template.New("routerTpl")
-	tpl = template.Must(tpl.Parse(debugRouterTpl))
-	err := tpl.ExecuteTemplate(&buf, "routerTpl", struct {
-		Routers []string
-	}{
-		Routers: routers,
-	})
-	if err != nil {
-		return err
-	}
-
-	c.WriteBytes(buf.Bytes())
 	return nil
 }
 

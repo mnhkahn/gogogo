@@ -78,6 +78,12 @@ func (h Got) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	c := AllocContext(w, r)
 	defer FreeContext(c)
 
+	if String("seo") == "true" {
+		if seo(c) {
+			return
+		}
+	}
+
 	var err error
 	c.Params, err = url.ParseQuery(c.Request.URL.RawQuery)
 	if err != nil {
