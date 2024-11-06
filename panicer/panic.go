@@ -14,18 +14,20 @@ func RecoverHandlerWithFunc(w http.ResponseWriter, r *http.Request, fn func(stri
 	if err := recover(); err != nil {
 		res := bytes.NewBuffer(nil)
 		rec := fmt.Sprintf("Recover %s %v %s\n", time.Now().Format(time.RFC3339), err, r.URL.String())
-		_, _ = fmt.Fprintf(os.Stderr, "request: %s", string(dump))
-		stack := printStack()
 
-		w.WriteHeader(http.StatusServiceUnavailable)
+		dump, _ := httputil.DumpRequest(r, true)
+		_, _ = fmt.Fprintf(os.Stderr, "request: %s", string(dump))
+
+		stack := printStack()
 
 		res.WriteString(rec)
 		res.WriteString(stack)
 
-		dump, _ := httputil.DumpRequest(r, true)
 		_, _ = res.Write(dump)
 
 		fn(res.String())
+
+		w.WriteHeader(http.StatusServiceUnavailable)
 	}
 }
 
