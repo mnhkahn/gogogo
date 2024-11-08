@@ -14,6 +14,7 @@ func RecoverHandlerWithFunc(w http.ResponseWriter, r *http.Request, fn func(stri
 	if err := recover(); err != nil {
 		res := bytes.NewBuffer(nil)
 		rec := fmt.Sprintf("Recover %s %v %s\n", time.Now().Format(time.RFC3339), err, r.URL.String())
+		os.Stderr.WriteString(rec)
 
 		dump, _ := httputil.DumpRequest(r, true)
 		_, _ = fmt.Fprintf(os.Stderr, "request: %s", string(dump))
