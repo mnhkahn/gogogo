@@ -8,7 +8,6 @@ import (
 	"reflect"
 
 	"github.com/mnhkahn/gogogo/app"
-	"github.com/mnhkahn/gogogo/panicer"
 	"github.com/mnhkahn/gogogo/xreflect"
 )
 
@@ -36,7 +35,9 @@ func NewFuncToHandler(fn interface{}) *FuncToHandler {
 }
 
 func (f *FuncToHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	defer panicer.RecoverHandlerWithFunc(w, r, app.DefaultHandler.ErrorMsgFunc)
+	if app.DefaultHandler.RecoverFunc != nil {
+		defer app.DefaultHandler.RecoverFunc(w, r)
+	}
 
 	// get parameter in
 	query := r.URL.Query()

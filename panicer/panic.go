@@ -10,14 +10,15 @@ import (
 	"time"
 )
 
-func RecoverHandlerWithFunc(w http.ResponseWriter, r *http.Request, fn func(string)) {
+// RecoverHandler help to recover in the handler.
+func RecoverHandler(w http.ResponseWriter, r *http.Request) {
 	if err := recover(); err != nil {
 		res := bytes.NewBuffer(nil)
 		rec := fmt.Sprintf("Recover %s %v %s\n", time.Now().Format(time.RFC3339), err, r.URL.String())
 		os.Stderr.WriteString(rec)
 
 		dump, _ := httputil.DumpRequest(r, true)
-		_, _ = fmt.Fprintf(os.Stderr, "request: %s", string(dump))
+		_, _ = fmt.Fprintf(os.Stderr, "request: %s", r.RequestURI)
 
 		stack := printStack()
 
@@ -26,17 +27,7 @@ func RecoverHandlerWithFunc(w http.ResponseWriter, r *http.Request, fn func(stri
 
 		_, _ = res.Write(dump)
 
-		fn(res.String())
-
-		w.WriteHeader(http.StatusServiceUnavailable)
-	}
-}
-
-// RecoverHandler help to recover in the handler.
-func RecoverHandler(w http.ResponseWriter, r *http.Request) {
-	if err := recover(); err != nil {
-		fmt.Fprintf(os.Stderr, "Recover %s %v %s\n", time.Now().Format(time.RFC3339), err, r.URL.String())
-		printStack()
+		os.Stderr.Write(res.Bytes())
 
 		w.WriteHeader(http.StatusServiceUnavailable)
 	}
@@ -58,6 +49,22 @@ func Recover() {
 	}
 }
 
+func DumpStack(r *http.Request, err interface{}) []byte {
+	res := bytes.NewBuffer(nil)
+	rec := fmt.Sprintf("Recover %s %v %s\n", time.Now().Format(time.RFC3339), err, r.URL.String())
+
+	dump, _ := httputil.DumpRequest(r, true)
+
+	stack := printStack()
+
+	res.WriteString(rec)
+	res.WriteString(stack)
+
+	_, _ = res.Write(dump)
+
+	return res.Bytes()
+}
+
 // print panic's stack.
 func printStack() string {
 	res := bytes.NewBuffer(nil)
@@ -67,7 +74,6 @@ func printStack() string {
 			break
 		}
 		d := fmt.Sprintf("%d %s:%d\n", pc, file, line)
-		fmt.Fprintf(os.Stderr, d)
 		res.WriteString(d)
 	}
 	return res.String()
