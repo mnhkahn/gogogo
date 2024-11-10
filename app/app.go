@@ -77,6 +77,10 @@ func Handle(pattern string, h http.Handler) {
 	GoEngine.Handle(pattern, h)
 }
 
+func HandleGot(pattern string, h func(c *Context) error) {
+	GoEngine.Handle(pattern, &Got{h})
+}
+
 // Serve ...
 func Serve(l net.Listener) {
 	InitRouter()

@@ -34,11 +34,15 @@ func NewFuncToHandler(fn interface{}) *FuncToHandler {
 	return f
 }
 
-func (f *FuncToHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (f *FuncToHandler) ServeFunc(c *app.Context) error {
 	if app.DefaultHandler.RecoverFunc != nil {
-		defer app.DefaultHandler.RecoverFunc(w, r)
+		defer app.DefaultHandler.RecoverFunc(c)
 	}
+	f.ServeHTTP(c.ResponseWriter, c.Request)
+	return nil
+}
 
+func (f *FuncToHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// get parameter in
 	query := r.URL.Query()
 	var inValues []reflect.Value
