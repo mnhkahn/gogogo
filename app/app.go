@@ -5,9 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	"golang.org/x/net/netutil"
-
 	"github.com/mnhkahn/gogogo/logger"
+	"golang.org/x/net/netutil"
 )
 
 // Engine ...
@@ -49,6 +48,16 @@ func (e *Engine) Serve(l net.Listener) {
 	logger.Error(e.server.Serve(e.l))
 }
 
+// ServeDefault ...
+func (e *Engine) ServeDefault(l net.Listener) {
+	e.l = l
+	e.server = &http.Server{
+		Handler: e.mux,
+	}
+	logger.Infof("Listening and serving HTTP on %s", e.l.Addr().String())
+	logger.Error(e.server.Serve(e.l))
+}
+
 // ServeMux ...
 func (e *Engine) ServeMux(l net.Listener, handler http.Handler) {
 	e.l = l
@@ -85,6 +94,12 @@ func HandleGot(pattern string, h func(c *Context) error) {
 func Serve(l net.Listener) {
 	InitRouter()
 	GoEngine.Serve(l)
+}
+
+// ServeDefault ...
+func ServeDefault(l net.Listener) {
+	InitRouter()
+	GoEngine.ServeDefault(l)
 }
 
 // ServeMux ...

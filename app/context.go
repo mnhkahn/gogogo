@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"sync"
 
+	"github.com/Masterminds/sprig"
 	"github.com/mnhkahn/gogogo/logger"
 )
 
@@ -201,7 +202,7 @@ func (c *Context) HTML(filenames []string, data interface{}) {
 
 // HTMLFunc ...
 func (c *Context) HTMLFunc(filenames []string, data interface{}, funcs template.FuncMap) {
-	tmpl := template.Must(template.ParseFiles(filenames...)).Funcs(funcs)
+	tmpl := template.Must(template.New("base").Funcs(sprig.FuncMap()).ParseFiles(filenames...)).Funcs(funcs)
 
 	err := tmpl.Execute(c.ResponseWriter, data)
 	if err != nil {
