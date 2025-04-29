@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"os"
 	"runtime"
+	"sort"
 
 	"github.com/mnhkahn/gogogo/logger"
 	"github.com/mnhkahn/gogogo/util"
@@ -58,10 +59,20 @@ func StatHandler(c *Context) error {
 	var buf bytes.Buffer
 	tpl := template.New("statTpl")
 	tpl = template.Must(tpl.Parse(statTpl))
+	stats := make([]*Stat, 0, len(DefaultHandler.Stats))
+	for _, v := range DefaultHandler.Stats {
+		stats = append(stats, v)
+	}
+	sort.Slice(stats, func(i, j int) bool {
+		if stats[i].Cnt == stats[j].Cnt {
+			return stats[i].Url > stats[j].Url
+		}
+		return stats[i].Cnt > stats[j].Cnt
+	})
 	err := tpl.ExecuteTemplate(&buf, "statTpl", struct {
-		Stats map[string]*Stat
+		Stats []*Stat
 	}{
-		DefaultHandler.Stats,
+		stats,
 	})
 	if err != nil {
 		return err
@@ -86,9 +97,9 @@ var statTpl = `
     <th>Sum Elapse</th> 
     <th>AvgTime Elapse</th>
   </tr>
-{{range $u, $stat := .Stats}}
+{{range $stat := .Stats}}
   <tr>
-    <td align="center">{{$u}}</td>
+    <td align="center">{{$stat.Url}}</td>
     <td align="center">{{$stat.Cnt}}</td> 
     <td align="center">{{$stat.SumTime}}</td>
     <td align="center">{{$stat.AvgTime}}</td>

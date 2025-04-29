@@ -2,8 +2,7 @@ package app
 
 // InitRouter ...
 func InitRouter() {
-	usr, pwd, _ := GetConfigAuth()
-	Handle("/debug/goapp", BasicAuthHandler(&Got{H: GoAppHandler}, usr, pwd))
-	Handle("/debug/log/level", BasicAuthHandler(Got{LogLevelHandler}, usr, pwd))
-	Handle("/debug/stat", BasicAuthHandler(Got{StatHandler}, usr, pwd))
+	Handle("/debug/goapp", AuthHandler(&Got{H: GoAppHandler}))
+	Handle("/debug/log/level", AuthHandler(Got{LogLevelHandler}))
+	Handle("/debug/stat", AuthHandler(Got{StatHandler}))
 }

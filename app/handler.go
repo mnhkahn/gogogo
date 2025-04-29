@@ -42,7 +42,7 @@ func (h *Handler) Cost(u string, st time.Time) {
 		stat.SumTime += time.Duration(d)
 		stat.AvgTime = stat.SumTime / time.Duration(stat.Cnt)
 	} else {
-		h.Stats[u] = &Stat{1, time.Duration(d), time.Duration(d)}
+		h.Stats[u] = &Stat{u, 1, time.Duration(d), time.Duration(d)}
 	}
 }
 
@@ -125,4 +125,9 @@ func (h basicAuthHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // BasicAuthHandler ...
 func BasicAuthHandler(handler http.Handler, user, pwd string) http.Handler {
 	return basicAuthHandler{handler: handler, user: user, pwd: pwd}
+}
+
+var AuthHandler = func(handler http.Handler) http.Handler {
+	usr, pwd, _ := GetConfigAuth()
+	return BasicAuthHandler(handler, usr, pwd)
 }
