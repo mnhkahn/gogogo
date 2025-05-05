@@ -8,11 +8,13 @@ import (
 
 	"github.com/mnhkahn/gogogo/logger"
 	"github.com/mnhkahn/gogogo/panicer"
+	"github.com/newrelic/go-agent/v3/newrelic"
 )
 
 // Handler ...
 type Handler struct {
 	TimeOut      time.Duration
+	Metrics      *newrelic.Application
 	RecoverFunc  func(c *Context)             `json:"-"`
 	ErrorMsgFunc func(c *Context, msg string) `json:"-"`
 	Stats        map[string]*Stat

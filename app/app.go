@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/mnhkahn/gogogo/logger"
+	"github.com/newrelic/go-agent/v3/newrelic"
 	"golang.org/x/net/netutil"
 )
 
@@ -75,7 +76,12 @@ func (e *Engine) Handle(pattern string, h http.Handler) {
 	if DefaultHandler.TimeOut > 0 {
 		h = http.TimeoutHandler(h, DefaultHandler.TimeOut, "")
 	}
-	e.mux.Handle(pattern, h)
+	if DefaultHandler.Metrics != nil {
+		p, q := newrelic.WrapHandle(DefaultHandler.Metrics, pattern, h)
+		e.mux.Handle(p, q)
+	} else {
+		e.mux.Handle(pattern, h)
+	}
 }
 
 // Default predefined engine
