@@ -85,27 +85,55 @@ func StatHandler(c *Context) error {
 
 var statTpl = `
 <html lang="en">
-<head>
-   <title>Statistics</title>
-</head>
-<body>
-<h3>Statistics</h3>
-<table style="width:100%">
-  <tr>
-    <th>Url Path</th>
-    <th>Count</th>
-    <th>Sum Elapse</th> 
-    <th>AvgTime Elapse</th>
-  </tr>
-{{range $stat := .Stats}}
-  <tr>
-    <td align="center">{{$stat.Url}}</td>
-    <td align="center">{{$stat.Cnt}}</td> 
-    <td align="center">{{$stat.SumTime}}</td>
-    <td align="center">{{$stat.AvgTime}}</td>
-  </tr>
-{{end}}
-</table>
+    <head>
+        <title>Statistics</title>
+    </head>
+    <body>
+        <h3>Statistics</h3>
+        <script>
+            // 定义静态资源的扩展名
+            const staticExtensions = [".css", ".js", ".ico", ".png", ".jpg", ".jpeg", ".gif", ".svg", ".woff", ".woff2", ".ttf", ".eot"];
 
-</body>
+            function toggleStaticResources() {
+                const checkbox = document.getElementById("filterStatic");
+                const rows = document.querySelectorAll("table tr:not(:first-child)"); // 排除表头
+
+                rows.forEach((row) => {
+                    const urlCell = row.querySelector("td:first-child");
+                    const url = urlCell.textContent.trim();
+
+                    // 检查URL是否包含静态资源扩展名
+                    const isStatic = staticExtensions.some((ext) => url.endsWith(ext));
+
+                    // 根据复选框状态和是否为静态资源来显示或隐藏行
+                    if (checkbox.checked && isStatic) {
+                        row.style.display = "none";
+                    } else {
+                        row.style.display = "";
+                    }
+                });
+            }
+        </script>
+        <div>
+            <input type="checkbox" id="filterStatic" onchange="toggleStaticResources()" />
+            <label for="filterStatic">Exclude static resources</label>
+        </div>
+        <table style="width: 100%">
+            <tr>
+                <th>Url Path</th>
+                <th>Count</th>
+                <th>Sum Elapse</th>
+                <th>AvgTime Elapse</th>
+            </tr>
+            {{range $stat := .Stats}}
+            <tr>
+                <td align="center" width="60%">{{$stat.Url}}</td>
+                <td align="center">{{$stat.Cnt}}</td>
+                <td align="center">{{$stat.SumTime}}</td>
+                <td align="center">{{$stat.AvgTime}}</td>
+            </tr>
+            {{end}}
+        </table>
+    </body>
+</html>
 `
