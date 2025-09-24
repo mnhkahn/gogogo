@@ -92,7 +92,7 @@ var statTpl = `
         <h3>Statistics</h3>
         <script>
             // 定义静态资源的扩展名
-            const staticExtensions = [".css", ".js", ".ico", ".png", ".jpg", ".jpeg", ".gif", ".svg", ".woff", ".woff2", ".ttf", ".eot"];
+            const staticExtensions = [".css", ".js", ".ico", ".png", ".jpg", ".jpeg", ".gif", ".svg", ".woff", ".woff2", ".ttf", ".eot", ".env", ".env.production", "phpinfo", ".django"];
 
             function toggleStaticResources() {
                 const checkbox = document.getElementById("filterStatic");
