@@ -1,11 +1,14 @@
 // Package app
 package app
 
-import "time"
+import (
+	"time"
+)
 
 type Stat struct {
-	Url     string
-	Cnt     int64
-	SumTime time.Duration
-	AvgTime time.Duration
+	Url        string
+	StatusCode int
+	Cnt        int64
+	SumTime    time.Duration
+	AvgTime    time.Duration
 }

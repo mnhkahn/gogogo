@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/felixge/httpsnoop"
 	"github.com/mnhkahn/gogogo/logger"
 	"github.com/newrelic/go-agent/v3/newrelic"
 	"golang.org/x/net/netutil"
@@ -43,7 +44,7 @@ func (e *Engine) Serve(l net.Listener) {
 	e.server = &http.Server{
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
-		Handler:      e.mux,
+		Handler:      addMetrics(e.mux),
 	}
 	logger.Infof("Listening and serving HTTP on %s", e.l.Addr().String())
 	logger.Error(e.server.Serve(e.l))
@@ -53,7 +54,7 @@ func (e *Engine) Serve(l net.Listener) {
 func (e *Engine) ServeDefault(l net.Listener) {
 	e.l = l
 	e.server = &http.Server{
-		Handler: e.mux,
+		Handler: addMetrics(e.mux),
 	}
 	logger.Infof("Listening and serving HTTP on %s", e.l.Addr().String())
 	logger.Error(e.server.Serve(e.l))
@@ -65,10 +66,20 @@ func (e *Engine) ServeMux(l net.Listener, handler http.Handler) {
 	e.server = &http.Server{
 		ReadTimeout:  1 * time.Second,
 		WriteTimeout: 1 * time.Second,
-		Handler:      handler,
+		Handler:      addMetrics(handler),
 	}
 	logger.Infof("Listening and serving HTTP on %s", e.l.Addr().String())
 	logger.Error(e.server.Serve(e.l))
+}
+
+func addMetrics(hnd http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		m := httpsnoop.CaptureMetricsFn(w, func(ww http.ResponseWriter) {
+			hnd.ServeHTTP(ww, r)
+		})
+		logger.Infof("[%s]%s %s %s", http.StatusText(m.Code), r.Method, r.URL.String(), m.Duration.String())
+		go DefaultHandler.Cost(r.URL.Path, m.Code, m.Duration)
+	})
 }
 
 // Handle ...

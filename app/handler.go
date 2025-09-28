@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fmt"
 	"net/http"
 	"net/url"
 	"sync"
@@ -34,17 +35,18 @@ func NewHandler() *Handler {
 	}
 }
 
-func (h *Handler) Cost(u string, st time.Time) {
+func (h *Handler) Cost(u string, statusCode int, d time.Duration) {
 	h.statLock.Lock()
 	defer h.statLock.Unlock()
 
-	d := time.Now().Sub(st).Nanoseconds()
-	if stat, e := h.Stats[u]; e {
+	key := fmt.Sprintf("[%s]%s", http.StatusText(statusCode), u)
+	if stat, e := h.Stats[key]; e {
 		stat.Cnt++
+		stat.StatusCode = statusCode
 		stat.SumTime += time.Duration(d)
 		stat.AvgTime = stat.SumTime / time.Duration(stat.Cnt)
 	} else {
-		h.Stats[u] = &Stat{u, 1, time.Duration(d), time.Duration(d)}
+		h.Stats[key] = &Stat{u, statusCode, 1, time.Duration(d), time.Duration(d)}
 	}
 }
 
@@ -72,8 +74,6 @@ type Got struct {
 
 // ServeHTTP ...
 func (h Got) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	st := time.Now()
-
 	c := AllocContext(w, r)
 	defer FreeContext(c)
 
@@ -92,19 +92,14 @@ func (h Got) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	c.Params, err = url.ParseQuery(c.Request.URL.RawQuery)
 	if err != nil {
 		c.Error(err.Error())
-		go DefaultHandler.Cost(c.Request.URL.Path, st)
 		return
 	}
 
 	err = h.H(c)
-	logger.Infof("%s %s", c.Request.Method, c.Request.URL.String())
 	if err != nil {
 		c.Error(err.Error())
-		go DefaultHandler.Cost(c.Request.URL.Path, st)
 		return
 	}
-
-	go DefaultHandler.Cost(c.Request.URL.Path, st)
 }
 
 type basicAuthHandler struct {

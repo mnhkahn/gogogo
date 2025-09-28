@@ -113,15 +113,37 @@ var statTpl = `
                     }
                 });
             }
+			function toggleErrorRequests() {
+                const checkbox = document.getElementById("filterError");
+                const rows = document.querySelectorAll("table tr:not(:first-child)"); // 排除表头
+
+                rows.forEach((row) => {
+                    const urlCell = row.querySelector("td:nth-child(3)");
+                    const url = urlCell.textContent.trim();
+
+                    // 检查URL是否包含静态资源扩展名
+                    const isError = parseInt(url, 10) >= 400;
+
+                    // 根据复选框状态和是否为静态资源来显示或隐藏行
+                    if (checkbox.checked && isError) {
+                        row.style.display = "none";
+                    } else {
+                        row.style.display = "";
+                    }
+                });
+            }
         </script>
         <div>
             <input type="checkbox" id="filterStatic" onchange="toggleStaticResources()" />
             <label for="filterStatic">Exclude static resources</label>
+			<input type="checkbox" id="filterError" onchange="toggleErrorRequests()" />
+            <label for="filterError">Exclude error requests</label>
         </div>
         <table style="width: 100%">
             <tr>
                 <th>Url Path</th>
                 <th>Count</th>
+                <th>Status Code</th>
                 <th>Sum Elapse</th>
                 <th>AvgTime Elapse</th>
             </tr>
@@ -129,6 +151,7 @@ var statTpl = `
             <tr>
                 <td align="center" width="60%">{{$stat.Url}}</td>
                 <td align="center">{{$stat.Cnt}}</td>
+                <td align="center">{{$stat.StatusCode}}</td>
                 <td align="center">{{$stat.SumTime}}</td>
                 <td align="center">{{$stat.AvgTime}}</td>
             </tr>
