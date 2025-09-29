@@ -113,8 +113,8 @@ var statTpl = `
                     }
                 });
             }
-			function toggleErrorRequests() {
-                const checkbox = document.getElementById("filterError");
+			function toggleSuccessRequests() {
+                const checkbox = document.getElementById("filterSuccess");
                 const rows = document.querySelectorAll("table tr:not(:first-child)"); // 排除表头
 
                 rows.forEach((row) => {
@@ -122,7 +122,7 @@ var statTpl = `
                     const url = urlCell.textContent.trim();
 
                     // 检查URL是否包含静态资源扩展名
-                    const isError = parseInt(url, 10) >= 400;
+                    const isError = parseInt(url, 10) >= 300;
 
                     // 根据复选框状态和是否为静态资源来显示或隐藏行
                     if (checkbox.checked && isError) {
@@ -136,8 +136,8 @@ var statTpl = `
         <div>
             <input type="checkbox" id="filterStatic" onchange="toggleStaticResources()" />
             <label for="filterStatic">Exclude static resources</label>
-			<input type="checkbox" id="filterError" onchange="toggleErrorRequests()" />
-            <label for="filterError">Exclude error requests</label>
+			<input type="checkbox" id="filterSuccess" onchange="toggleSuccessRequests()" />
+            <label for="filterSuccess">Exclude error requests</label>
         </div>
         <table style="width: 100%">
             <tr>
