@@ -94,10 +94,10 @@ var statTpl = `
             // 定义静态资源的扩展名
             const staticExtensions = [".css", ".js", ".ico", ".png", ".jpg", ".jpeg", ".gif", ".svg", ".woff", ".woff2", ".ttf", ".eot", ".env", ".env.production", "phpinfo", ".django"];
 
-            function toggleStaticResources() {
+            function toggleStaticAndErrorResources() {
                 const checkbox = document.getElementById("filterStatic");
-                const rows = document.querySelectorAll("table tr:not(:first-child)"); // 排除表头
 
+                const rows = document.querySelectorAll("table tr:not(:first-child)"); // 排除表头
                 rows.forEach((row) => {
                     const urlCell = row.querySelector("td:first-child");
                     const url = urlCell.textContent.trim();
@@ -105,27 +105,13 @@ var statTpl = `
                     // 检查URL是否包含静态资源扩展名
                     const isStatic = staticExtensions.some((ext) => url.endsWith(ext));
 
-                    // 根据复选框状态和是否为静态资源来显示或隐藏行
-                    if (checkbox.checked && isStatic) {
-                        row.style.display = "none";
-                    } else {
-                        row.style.display = "";
-                    }
-                });
-            }
-			function toggleSuccessRequests() {
-                const checkbox = document.getElementById("filterSuccess");
-                const rows = document.querySelectorAll("table tr:not(:first-child)"); // 排除表头
-
-                rows.forEach((row) => {
-                    const urlCell = row.querySelector("td:nth-child(3)");
-                    const url = urlCell.textContent.trim();
-
+                    const codeCell = row.querySelector("td:nth-child(3)");
+                    const code = codeCell.textContent.trim();
                     // 检查URL是否包含静态资源扩展名
-                    const isError = parseInt(url, 10) >= 300;
+                    const isError = parseInt(code, 10) >= 300;
 
                     // 根据复选框状态和是否为静态资源来显示或隐藏行
-                    if (checkbox.checked && isError) {
+                    if (checkbox.checked && (isStatic || isError)) {
                         row.style.display = "none";
                     } else {
                         row.style.display = "";
@@ -134,10 +120,8 @@ var statTpl = `
             }
         </script>
         <div>
-            <input type="checkbox" id="filterStatic" onchange="toggleStaticResources()" />
-            <label for="filterStatic">Exclude static resources</label>
-			<input type="checkbox" id="filterSuccess" onchange="toggleSuccessRequests()" />
-            <label for="filterSuccess">Exclude error requests</label>
+            <input type="checkbox" id="filterStatic" onchange="toggleStaticAndErrorResources()" />
+            <label for="filterStatic">Exclude static && error resources</label>
         </div>
         <table style="width: 100%">
             <tr>
