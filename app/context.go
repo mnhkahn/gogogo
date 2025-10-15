@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"net/http"
 	"net/url"
+	"path/filepath"
 	"strconv"
 	"sync"
 
@@ -202,9 +203,9 @@ func (c *Context) HTML(filenames []string, data interface{}) {
 
 // HTMLFunc ...
 func (c *Context) HTMLFunc(filenames []string, data interface{}, funcs template.FuncMap) {
-	tmpl := template.Must(template.New("base").Funcs(sprig.FuncMap()).ParseFiles(filenames...)).Funcs(funcs)
-
-	err := tmpl.Execute(c.ResponseWriter, data)
+	filename := filepath.Base(filenames[0])
+	tmpl := template.Must(template.New(filename).Funcs(sprig.FuncMap()).Funcs(funcs).ParseFiles(filenames...))
+	err := tmpl.ExecuteTemplate(c.ResponseWriter, filename, data)
 	if err != nil {
 		DefaultHandler.ErrorMsgFunc(c, err.Error())
 	}
