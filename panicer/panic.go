@@ -37,7 +37,7 @@ func RecoverHandler(w http.ResponseWriter, r *http.Request) {
 func RecoverDebug(v interface{}) {
 	if err := recover(); err != nil {
 		fmt.Fprintf(os.Stderr, "Recover: %s %v %+v\n", time.Now().Format(time.RFC3339), err, v)
-		printStack()
+		os.Stderr.WriteString(printStack())
 	}
 }
 
@@ -45,7 +45,7 @@ func RecoverDebug(v interface{}) {
 func Recover() {
 	if err := recover(); err != nil {
 		fmt.Fprintf(os.Stderr, "Recover: %s %v\n", time.Now().Format(time.RFC3339), err)
-		printStack()
+		os.Stderr.WriteString(printStack())
 	}
 }
 
