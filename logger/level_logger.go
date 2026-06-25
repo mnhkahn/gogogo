@@ -176,6 +176,14 @@ func (ll *Logger) SetJack(lfn string, maxsize int) {
 	ll.debug.SetOutput(jack)
 }
 
+// SetOutput sets the output destination for the logger.
+func (ll *Logger) SetOutput(w io.Writer) {
+	ll.err.SetOutput(w)
+	ll.warn.SetOutput(w)
+	ll.info.SetOutput(w)
+	ll.debug.SetOutput(w)
+}
+
 // SetFlag sets log flags. For more information, see the sdk https://golang.org/pkg/log/#pkg-constants.
 func (ll *Logger) SetFlag(flag int) {
 	ll.err.SetFlags(flag)
@@ -192,6 +200,11 @@ var (
 // SetJack sets the StdLogger's writer to file lfn.
 func SetJack(lfn string, maxsize int) {
 	StdLogger.SetJack(lfn, maxsize)
+}
+
+// SetOutput sets the output destination for StdLogger.
+func SetOutput(w io.Writer) {
+	StdLogger.SetOutput(w)
 }
 
 // Errorf print log with level Error.
