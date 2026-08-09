@@ -1,8 +1,10 @@
 package app
 
 import (
+	"fmt"
 	"net"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/felixge/httpsnoop"
@@ -77,9 +79,26 @@ func addMetrics(hnd http.Handler) http.Handler {
 		m := httpsnoop.CaptureMetricsFn(w, func(ww http.ResponseWriter) {
 			hnd.ServeHTTP(ww, r)
 		})
-		logger.Infof("[%s]%s %s %s", http.StatusText(m.Code), r.Method, r.URL.String(), m.Duration.String())
+		message := fmt.Sprintf("[%s]%s %s %s", http.StatusText(m.Code), r.Method, r.URL.String(), m.Duration.String())
+		if m.Code == http.StatusTooManyRequests {
+			message += fmt.Sprintf(" ip=%q ua=%q referer=%q", requestClientIP(r), r.UserAgent(), r.Referer())
+		}
+		logger.Info(message)
 		go DefaultHandler.Cost(r.URL.Path, m.Code, m.Duration)
 	})
+}
+
+func requestClientIP(r *http.Request) string {
+	for _, header := range []string{"Fly-Client-IP", "X-Forwarded-For", "X-Real-IP"} {
+		if value := strings.TrimSpace(strings.Split(r.Header.Get(header), ",")[0]); value != "" {
+			return value
+		}
+	}
+	host, _, err := net.SplitHostPort(r.RemoteAddr)
+	if err == nil {
+		return host
+	}
+	return r.RemoteAddr
 }
 
 // Handle ...
