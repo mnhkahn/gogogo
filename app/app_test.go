@@ -13,6 +13,9 @@ func TestStat(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		DefaultHandler.Cost("a", http.StatusOK, 50*time.Millisecond)
 	}
-	assert.EqualValues(t, 10, DefaultHandler.Stats["a"].Cnt)
+	stat := DefaultHandler.Stats["[OK]a"]
+	if assert.NotNil(t, stat) {
+		assert.EqualValues(t, 10, stat.Cnt)
+	}
 	//assert.EqualValues(t, time.Duration(50*time.Millisecond).String(), time.Duration(DefaultHandler.Stats["a"].AvgTime).String())
 }
